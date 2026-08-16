@@ -17,3 +17,6 @@ build/
 out/
 coverage/
 *.log
+.venv/
+__pycache__/
+*.pyc

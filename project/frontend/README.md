@@ -1,10 +1,13 @@
-# Frontend
+# Frontend — Emergency Control
 
-Interfaz web del proyecto.
+React + TypeScript + Vite + React Three Fiber voxel scene.
 
-Debe permitir observar el resultado del agente.
+## Run
 
-En esta versión inicial del repositorio solo se reserva la estructura de carpetas. La interfaz se incorporará después.
+```bash
+cd project/frontend
+npm install
+npm run dev
+```
 
-- `src/` — código de la interfaz
-- `public/` — recursos estáticos
+Open http://localhost:5173 — the Vite proxy forwards `/api/*` to the backend on port 8000.

@@ -1,49 +1,71 @@
-# Proyecto
+# Proyecto — Emergency Control
 
-Esta carpeta contiene la solución del parcial.
-
-El enunciado está en el `README.MD` de la raíz del repositorio.
+Frontend 3D del profesor + API demo (sin IA). El enunciado está en el `README.MD` de la raíz.
 
 ## Estructura
 
 ```text
 project/
-├── frontend/
-├── backend/
-├── scenarios/
+├── frontend/          # React + R3F — simulación 3D voxel
+├── backend/           # FastAPI — POST /api/solve (plan demo)
+├── scenarios/         # scenario.json — fuente de verdad
 ├── design.md
 └── README.md
 ```
 
-- `frontend/` — interfaz web
-- `backend/` — agente y API
-- `scenarios/` — instancia de la misión
-- `design.md` — diseño del agente (Entregable 1)
+## Cómo levantar (tú)
 
-## Cómo ejecutar
+Abre **dos terminales**.
 
-Completar las instrucciones de modo que el proyecto pueda iniciarse siguiendo únicamente este archivo.
+### Terminal 1 — Backend
 
-### 1. Instalar dependencias
+```bash
+cd project/backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --app-dir src --port 8000
+```
 
-(completar)
+Comprobar: http://127.0.0.1:8000/api/health
 
-### 2. Iniciar el backend
+### Terminal 2 — Frontend
 
-(completar)
+```bash
+cd project/frontend
+npm install
+npm run dev
+```
 
-### 3. Iniciar el frontend
+Abrir: http://localhost:5173
 
-(completar)
+Pulsa **EXECUTE PLAN**. El frontend llama a `/api/solve` (proxy Vite → puerto 8000) y reproduce el plan casilla a casilla.
 
-### 4. Ejecutar el agente
+### Tests del plan demo
 
-(completar)
+```bash
+cd project/backend
+.\.venv\Scripts\activate
+python tests/test_demo_plan.py
+```
 
-### 5. Probar una misión
+## Contrato visual vs agente (importante)
 
-(completar)
+El enunciado fija **4 operaciones visuales** que el frontend entiende:
 
-### 6. Interpretar el resultado
+```text
+MOVE | PICKUP | DROP | INTERACT
+```
 
-(completar)
+`REPAIR`, `ACTIVATE`, `OPEN_DOOR`, `RECHARGE` **no son ops del plan de alto nivel**: son el campo `action` dentro de un paso `INTERACT`.
+
+Ejemplo de lo que debe devolver `/api/solve`:
+
+```json
+{ "op": "INTERACT", "target": "PANEL_A", "action": "REPAIR", "consumes": "FUSE", "cost": 2 }
+```
+
+- **Agente (estudiante):** puede modelar acciones internas (`REPAIR_PANEL_A`, etc.) y luego **traducirlas** a `MOVE`/`PICKUP`/`DROP`/`INTERACT`.
+- **Frontend / banco de pruebas:** solo ejecuta esas 4 ops. El log muestra `INTERACT REPAIR ...` para dejar claro el `op` + el `action`.
+
+Así no hay contradicción: la capa visual no define la IA; solo anima el plan ya traducido.
