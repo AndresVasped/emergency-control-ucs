@@ -51,6 +51,8 @@ python tests/test_demo_plan.py
 
 ## Contrato visual vs agente (importante)
 
+La versión oficial y completa de este contrato (esquema JSON, acciones de `INTERACT`, reglas del mundo y costos) está en `../CONTRATO.md`, que forma parte del enunciado.
+
 El enunciado fija **4 operaciones visuales** que el frontend entiende:
 
 ```text

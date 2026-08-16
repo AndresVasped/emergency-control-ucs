@@ -105,6 +105,14 @@ El costo de un plan es la suma de los costos de las acciones que lo componen, co
 
 Si no existe ningún plan válido, el agente debe retornar `FAILURE`.
 
+## 2.7. Reglas del mundo
+
+Las reglas precisas del entorno (precondiciones que el simulador hace cumplir, formato exacto del plan y costos oficiales) están especificadas en el documento **`CONTRATO.md`**, que forma parte de este enunciado.
+
+El contrato define lo que es **fijo**: el conjunto cerrado de operaciones que acepta el banco de pruebas y las condiciones bajo las cuales un paso es legal.
+
+Lo que sigue siendo **libre** —y es el objeto principal de la evaluación— es el diseño del agente: la representación del estado, el conjunto de acciones internas, el modelo de transición, la prueba de meta, la función de costo y la estrategia de búsqueda.
+
 ---
 
 # 3. REPOSITORIO BASE
@@ -274,6 +282,8 @@ RECHARGE
 ```
 
 puede representarse visualmente mediante una o varias de las operaciones disponibles.
+
+**Importante:** esos nombres son ejemplos de acciones *internas* del agente, no valores aceptados por el frontend. El plan retornado por `/api/solve` debe estar traducido al contrato cerrado especificado en `CONTRATO.md` (las cuatro operaciones visuales y, dentro de `INTERACT`, únicamente las acciones allí enumeradas). Un plan que no cumpla el contrato será rechazado por el banco de pruebas.
 
 La capa visual no debe determinar la lógica del agente.
 
