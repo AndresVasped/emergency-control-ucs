@@ -51,6 +51,8 @@ Recargar devuelve la batería a su capacidad máxima.
 
 La batería forma parte de la situación física del robot: dos configuraciones idénticas salvo por su nivel de batería representan situaciones diferentes cuando las acciones futuras pueden cambiar.
 
+Eso no obliga a explorar todos los paseos que solo gastan energía. Si dos caminos llegan al mismo mundo (misma zona, misma carga, mismo entorno) y uno trae más batería a un costo menor o igual, el otro está dominado: no puede mejorar el resto del plan. Graph Search puede usar esa observación en CLOSED.
+
 ## 2.2. Capacidad de transporte
 
 El robot tiene una capacidad física máxima de transporte.
@@ -60,6 +62,8 @@ Los materiales poseen propiedades conocidas de peso o capacidad.
 Los objetos del mismo tipo que sean declarados equivalentes en el escenario no deben distinguirse artificialmente mediante identificadores individuales.
 
 El robot puede recoger elementos y, cuando sea necesario para continuar la misión, puede dejarlos temporalmente en una zona.
+
+**Advertencia de formulación (léala antes de implementar):** el contrato permite `DROP` en cualquier zona. Eso no significa que su agente deba *generar* `DROP` como sucesor en cada estado en el que el robot lleva algo. Si lo hace, el espacio de estados deja de ser «un mapa de cinco zonas» y pasa a ser la combinatoria de **dónde quedó cada objeto**. UCS no es lento porque el puzzle sea enorme: es lento cuando `Applicable` es demasiado generoso. Restringir qué `DROP` (y qué `PICKUP`) se generan, **sin perder el plan de menor costo**, es parte del diseño del agente — no se «arregla» subiendo `cargo_capacity` en `scenario.json` ni apagando la batería. El profesor probará instancias distintas con las mismas reglas.
 
 ## 2.3. Materiales y herramientas
 
@@ -113,6 +117,14 @@ El contrato define lo que es **fijo**: el conjunto cerrado de operaciones que ac
 
 Lo que sigue siendo **libre** —y es el objeto principal de la evaluación— es el diseño del agente: la representación del estado, el conjunto de acciones internas, el modelo de transición, la prueba de meta, la función de costo y la estrategia de búsqueda.
 
+Hay una distinción que el curso enfatiza y que aquí es crítica:
+
+```text
+legal según el simulador  ≠  relevante para buscar
+```
+
+El banco de pruebas rechaza un paso ilegal. Su agente, al generar sucesores, puede omitir acciones que el contrato *permitiría* si puede justificar que **ningún plan óptimo** las usa. Esa es una decisión de formulación, no un atajo sobre una instancia.
+
 ---
 
 # 3. REPOSITORIO BASE
@@ -156,6 +168,8 @@ Este archivo debe existir antes de comenzar la implementación principal del age
 
 Debe explicar, con sus propias palabras y notación, las siguientes decisiones.
 
+`project/design.md` ya trae las **subsecciones** que se espera cubrir (definición formal, variables necesarias, qué se deriva, nodo vs estado, equivalencia, relevancia, `Applicable` vs contrato, dominancia de la batería, tamaño del espacio). Complételas; no las borre para pegar el enunciado.
+
 ## 4.1. Estado
 
 Defina formalmente qué información representa un estado.
@@ -181,6 +195,8 @@ Para cada acción indique:
 * costo.
 
 El conjunto de acciones internas es libre.
+
+Preste atención a `DROP`. En el mundo es legal casi siempre; en la búsqueda, generar todas las colocaciones posibles de objetos es lo que hace inviable UCS. En `design.md` debe quedar escrito **cuándo** su agente genera un `DROP` y por qué esa restricción no pierde el óptimo.
 
 ## 4.3. Modelo de transición
 
@@ -228,6 +244,8 @@ La justificación debe discutir, cuando corresponda:
 * condiciones bajo las cuales las garantías de la estrategia dejan de cumplirse.
 
 La elección debe estar sustentada por las características reales del entorno y de la misión, no solamente por una definición del algoritmo.
+
+El tiempo y el espacio de UCS dependen del **factor de ramificación que usted genera**, no del número de habitaciones del mapa. Si la búsqueda no termina, el primer sospechoso es `Applicable` (en particular `DROP` y los objetos que ya no sirven), no el algoritmo ni el JSON de la demo.
 
 ---
 
@@ -409,7 +427,8 @@ Se evalúa:
 * efectos;
 * legalidad de acciones;
 * coherencia del modelo de transición;
-* consistencia entre el modelo matemático y la implementación.
+* consistencia entre el modelo matemático y la implementación;
+* tratamiento de `DROP` y de acciones legales pero irrelevantes para el óptimo (factor de ramificación).
 
 ### Meta y costo — 10%
 

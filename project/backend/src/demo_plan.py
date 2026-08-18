@@ -6,10 +6,13 @@ from typing import Any
 
 
 def build_demo_plan(scenario: dict[str, Any]) -> dict[str, Any]:
-    """Return a consistent plan that exercises every visual operation.
+    """Plan artesanal para probar el frontend. No es un agente de IA.
 
-    Sequence covers visual ops MOVE/PICKUP/DROP/INTERACT.
-    INTERACT subtypes: OPEN_DOOR, REPAIR, RECHARGE, ACTIVATE.
+    Es legal y recorre todas las ops visuales, pero no es necesariamente
+    óptimo (usa el pasillo caro Z2↔Z5 y por eso recarga). Los DROP no son
+    decorativos: con cargo_capacity=3 hay que hacer hueco. El agente del
+    estudiante debe *descubrir* cuándo soltar, no copiar esta secuencia,
+    y no debe subir la capacidad para evitarlos.
     """
     costs = scenario.get("action_costs", {})
     pickup = costs.get("pickup", 1)

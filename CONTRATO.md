@@ -70,6 +70,7 @@ MOVE | PICKUP | DROP | INTERACT
 ```
 
 - El objeto queda en el suelo de la zona actual y puede recogerse después.
+- El simulador **no** le prohíbe soltar en una zona donde no hace falta el hueco. Esa holgura es física, no una instrucción de diseño: si su búsqueda trata cada `DROP` legal como un sucesor, combinará las posiciones de todos los objetos y no terminará en tiempo de examen. El agente puede generar menos `DROP` que los que el contrato aceptaría, siempre que el plan óptimo siga siendo alcanzable. Detalle en el enunciado §2.2 y en `design.md`.
 
 ### 3.4. `INTERACT` — operar sobre un elemento del entorno
 
@@ -145,5 +146,7 @@ El campo `cost` de cada paso y el `total_cost` del plan deben corresponder a est
 ## 6. Advertencias finales
 
 - **El escenario es la fuente de verdad.** No codifique en su agente los ids, costos ni cantidades del ejemplo: el profesor probará con instancias distintas (posiciones, costos, recursos, puertas y existencia de solución pueden cambiar). Las reglas de este contrato se mantienen; los valores no.
+- **No «facilite» la demo para que UCS acabe.** Subir `cargo_capacity`, ignorar la batería o recortar estaciones resuelve *esta* instancia y falla la siguiente. El arreglo está en el modelo (estado canónico, `Applicable` más estricto que el simulador cuando se puede justificar).
+- **`DROP` es el cuello de botella habitual.** Cinco zonas no son un espacio pequeño si cada objeto puede quedar en cualquiera de ellas. Formule cuándo soltar es una *decisión*, no un paseo.
 - **El log del frontend es su herramienta de depuración.** Cada paso rechazado indica la razón exacta (puerta cerrada, batería insuficiente, material faltante, etc.).
 - Un plan que el frontend ejecuta completo no implica nota completa: la evaluación principal es el diseño del agente documentado en `design.md` y su correspondencia con la implementación.

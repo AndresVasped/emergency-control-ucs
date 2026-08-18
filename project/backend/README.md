@@ -3,8 +3,9 @@
 Python API that exposes `POST /api/solve`.
 
 The default implementation returns a **demo plan** (no search / no AI) so the
-frontend can be tested end-to-end. Students replace `demo_plan.py` / the solve
-handler with their UCS agent.
+frontend can be tested end-to-end. Students replace the solve handler with
+their search agent. Do not «fix» `scenario.json` (capacity, battery, rooms)
+to make UCS finish: formulate `Applicable` instead. See `project/design.md`.
 
 ## Run
 

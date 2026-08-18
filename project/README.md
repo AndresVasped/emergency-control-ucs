@@ -1,6 +1,9 @@
 # Proyecto — Emergency Control
 
-Frontend 3D del profesor + API demo (sin IA). El enunciado está en el `README.MD` de la raíz.
+El diseño interno de la IA lo escribe usted en [`design.md`](design.md) **antes**
+de implementar. Ese archivo ya trae las subsecciones que debe completar
+(estado, acciones, `DROP`, batería, tamaño del espacio). El enunciado está en
+el `README.MD` de la raíz; las reglas del mundo, en [`../CONTRATO.md`](../CONTRATO.md).
 
 ## Estructura
 
@@ -40,6 +43,8 @@ npm run dev
 Abrir: http://localhost:5173
 
 Pulsa **EXECUTE PLAN**. El frontend llama a `/api/solve` (proxy Vite → puerto 8000) y reproduce el plan casilla a casilla.
+
+Hasta que conecte su agente, `/api/solve` devuelve el plan artesanal de `demo_plan.py` (sin búsqueda). Ese plan existe para probar el frontend: es legal, no es necesariamente el de menor costo, y usa `DROP` porque la capacidad es 3. No tome esos `DROP` como «hay que soltar en cualquier zona»: son un ejemplo de *presión de carga*.
 
 ### Tests del plan demo
 
